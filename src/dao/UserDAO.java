@@ -1,5 +1,6 @@
 package dao;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,17 +11,26 @@ import utility.ConnectionManager;
 
 public class UserDAO implements UserDaoInterface {
 
+	@Override
 	public int signUp(User user) {
-		String INSERT_USERS_SQL = "INSERT INTO USERS(email, password)VALUES(?,?)";
+		String INSERT_USERS_SQL = "INSERT INTO USERDETAILS(email, password)VALUES(?,?)";
 
 		int result = 0;
-		try
-		{
-			Connection connection = ConnectionManager.getConnection();
+		try {
+			Connection connection = null;
+			try {
+				connection = ConnectionManager.getConnection();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			// Step 2:Create a statement using connection object
 			PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USERS_SQL);
-			preparedStatement.setString(1,user.getEmail());
-			preparedStatement.setString(2,user.getPassword());
+			preparedStatement.setString(1, user.getEmail());
+			preparedStatement.setString(2, user.getPassword());
 			System.out.println(preparedStatement);
 			// Step 3: Execute the query or update query
 			result = preparedStatement.executeUpdate();
@@ -29,15 +39,26 @@ public class UserDAO implements UserDaoInterface {
 		}
 		return result;
 	}
-	
+
+	@Override
 	public boolean loginUser(User user) {
 		boolean status = false;
-		try{
-			Connection connection = ConnectionManager.getConnection();
-		
-				// Step 2:Create a statement using connection object
-		PreparedStatement preparedStatement = connection.prepareStatement("select * from users where email = ? and password = ? ");
-		
+		try {
+			Connection connection = null;
+			try {
+				connection = ConnectionManager.getConnection();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			// Step 2:Create a statement using connection object
+			PreparedStatement preparedStatement = connection
+					.prepareStatement("select * from userdetails where email = ? and password = ? ");
+
 			preparedStatement.setString(1, user.getEmail());
 			preparedStatement.setString(2, user.getPassword());
 
